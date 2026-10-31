@@ -1,0 +1,7 @@
+{
+  "$comment": "Template source config. The Astro base template lives in a versioned GitHub repo. Always consume the branch indicated here. It is the developer's responsibility to keep that branch updated.",
+  "repo": "",
+  "branch": "main",
+  "singleBranch": true,
+  "depth": 1
+}

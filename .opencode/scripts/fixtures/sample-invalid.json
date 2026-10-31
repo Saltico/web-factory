@@ -1,0 +1,21 @@
+{
+  "brand": {
+    "name": "Bad Brand",
+    "colors": {
+      "primary": "red",
+      "secondary": "#7C3AED",
+      "accent": "#F59E0B",
+      "background": "#FFFFFF",
+      "text": "#1F2937"
+    }
+  },
+  "site": {
+    "domain": "bad.example.com"
+  },
+  "pages": [
+    {
+      "route": "no-slash",
+      "title": "Bad Page"
+    }
+  ]
+}

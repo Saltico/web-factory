@@ -1,0 +1,44 @@
+{
+  "$schema": "site-spec.schema.json",
+  "meta": {
+    "clientName": "Acme Studio",
+    "version": "1.0.0",
+    "createdAt": "2026-10-27T00:00:00Z"
+  },
+  "brand": {
+    "name": "Acme Studio",
+    "tagline": "Diseño web profesional",
+    "colors": {
+      "primary": "#2563EB",
+      "secondary": "#7C3AED",
+      "accent": "#F59E0B",
+      "background": "#FFFFFF",
+      "text": "#1F2937"
+    }
+  },
+  "site": {
+    "domain": "acmestudio.com",
+    "language": "es",
+    "locale": "es-ES",
+    "social": {
+      "instagram": "https://instagram.com/acmestudio"
+    }
+  },
+  "pages": [
+    {
+      "route": "/",
+      "title": "Inicio - Acme Studio",
+      "description": "Estudio de diseño web profesional."
+    },
+    {
+      "route": "/contacto",
+      "title": "Contacto - Acme Studio",
+      "description": "Contáctanos para tu proyecto web."
+    }
+  ],
+  "features": {
+    "gtm_id": "GTM-ABC123",
+    "has_contact_form": true,
+    "dark_mode": false
+  }
+}
