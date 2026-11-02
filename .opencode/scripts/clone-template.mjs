@@ -1,4 +1,4 @@
-import { cpSync, existsSync, readdirSync, rmSync, statSync } from 'node:fs';
+import { cpSync, existsSync, readdirSync, rmSync, statSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -6,17 +6,18 @@ import { spawnSync } from 'node:child_process';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const target = process.argv[2];
+const force = process.argv.includes('--force');
+const target = process.argv.find((a, i) => i >= 2 && !a.startsWith('--'));
+
 if (!target) {
   console.error('Error: missing target directory.');
-  console.error('Usage: node clone-template.mjs <target-project-dir>');
+  console.error('Usage: node clone-template.mjs <target-project-dir> [--force]');
   process.exit(1);
 }
 
 const configPath = resolve(__dirname, '..', 'config', 'template.json');
 let config;
 try {
-  const { readFileSync } = await import('node:fs');
   config = JSON.parse(readFileSync(configPath, 'utf-8'));
 } catch (err) {
   console.error(`Error: could not read config at ${configPath}: ${err.message}`);
@@ -29,14 +30,25 @@ if (!config.repo || config.repo.trim() === '') {
 }
 
 const resolvedTarget = resolve(target);
+const gitCheck = spawnSync('git', ['--version'], { stdio: 'ignore' });
+if (gitCheck.status !== 0) {
+  console.error('Error: git is not installed or not in PATH. Install git and try again.');
+  process.exit(1);
+}
 
 if (existsSync(resolvedTarget)) {
   const stat = statSync(resolvedTarget);
   if (stat.isDirectory()) {
     const entries = readdirSync(resolvedTarget);
     if (entries.length > 0) {
-      console.error('Target directory already exists and is not empty');
-      process.exit(1);
+      if (force) {
+        console.log(`--force: removing existing directory ${resolvedTarget}`);
+        rmSync(resolvedTarget, { recursive: true, force: true });
+      } else {
+        console.error('Target directory already exists and is not empty.');
+        console.error('Use --force to remove it and clone again.');
+        process.exit(1);
+      }
     }
   }
 }
@@ -44,9 +56,7 @@ if (existsSync(resolvedTarget)) {
 const branch = config.branch || 'main';
 const args = ['clone'];
 
-if (branch) {
-  args.push('--branch', branch);
-}
+args.push('--branch', branch);
 if (config.singleBranch) {
   args.push('--single-branch');
 }
@@ -62,6 +72,10 @@ const result = spawnSync('git', args, { stdio: 'inherit' });
 
 if (result.status !== 0) {
   console.error(`Error: git clone failed with exit code ${result.status}`);
+  if (existsSync(resolvedTarget)) {
+    console.log('Cleaning up partial clone...');
+    rmSync(resolvedTarget, { recursive: true, force: true });
+  }
   process.exit(result.status || 1);
 }
 

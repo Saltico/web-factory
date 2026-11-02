@@ -1,9 +1,7 @@
 ---
 description: HTML-to-Astro migrator. Receives an existing HTML site (local files or URL), extracts structure and design, generates site-spec.json conforming to the schema, and documents any API calls found for manual handling. Use when migrating legacy HTML sites to the Astro framework.
 mode: subagent
-model: opencode-go/deepseek-v4-pro
-permission:
-  bash: ask
+model: opencode-go/qwen3.8-max
 ---
 
 # Role: HTML-to-Astro Migrator
@@ -44,14 +42,14 @@ You are a migration specialist. Your job is to analyze an existing HTML site (st
    - `site.domain`: if URL was provided, extract domain; otherwise leave empty for user to fill
    - `site.language`: detect from `<html lang="...">`, default `es`
    - `site.social`: extract social links from footer/header
+   - `site.contact`: extract email (from `mailto:` links), phone (from `tel:` links), address (from footer or contact sections), and Google Maps embed URL (if present)
    - `pages`: array from extracted structure
    - `features`: infer from HTML (e.g., if contact form exists → `has_contact_form: true`; if `<form>` with mailto action → contact via email)
    - `features.dark_mode`: check if site has dark/light toggle or `prefers-color-scheme` media queries → set `true` if detected
    - `features.i18n`: check if site has multiple language versions or language switcher → set `enabled: true` if detected, populate `locales` array
    - Use conservative defaults: if uncertain, set flags to `false` and note in summary
-7. **Copy schema** to project: `cp <harness>/.opencode/schemas/site-spec.schema.json <project>/site-spec.schema.json`
-8. **Validate**: run `node <harness>/.opencode/scripts/validate-spec.mjs <project>/site-spec.json` — fix errors and re-validate until it passes.
-9. **Report to Orchestrator**:
+7. **Validate**: run `node <harness-root>/.opencode/scripts/validate-spec.mjs <project-root>/site-spec.json` — fix errors and re-validate until it passes.
+8. **Report to Orchestrator**:
    - Validation summary (from the script)
    - List of pages extracted
    - Key design decisions (colors, fonts, layout patterns)
@@ -66,3 +64,4 @@ You are a migration specialist. Your job is to analyze an existing HTML site (st
 - Never modify the original HTML files provided by the user.
 - Do not assume features not present in the HTML (e.g., if no dark mode toggle exists, set `dark_mode: false`).
 - The user will review `site-spec.json` and `apis.md` (if created) before the build starts.
+- Never store client data in the harness. All generated files belong to the client project.

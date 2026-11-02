@@ -3,7 +3,8 @@
   "meta": {
     "clientName": "Acme Studio",
     "version": "1.0.0",
-    "createdAt": "2026-10-27T00:00:00Z"
+    "createdAt": "2026-10-27T00:00:00Z",
+    "approvedAt": "2026-10-27T12:00:00Z"
   },
   "brand": {
     "name": "Acme Studio",
@@ -19,16 +20,22 @@
   "site": {
     "domain": "acmestudio.com",
     "language": "es",
-    "locale": "es-ES",
     "social": {
-      "instagram": "https://instagram.com/acmestudio"
+      "instagram": "https://instagram.com/acmestudio",
+      "whatsapp": "https://wa.me/56912345678"
+    },
+    "contact": {
+      "email": "hola@acmestudio.com",
+      "phone": "+56912345678",
+      "address": "Av. Providencia 1234, Santiago, Chile",
+      "mapsEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.123!2d-70.6!3d-33.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI0JzAwLjAiUyA3MMKwMzYnMDAuMCJX!5e0!3m2!1ses!2scl!4v1234567890"
     }
   },
   "pages": [
     {
       "route": "/",
       "title": "Inicio - Acme Studio",
-      "description": "Estudio de diseño web profesional."
+      "description": "Estudio de diseño web profesional en Santiago de Chile."
     },
     {
       "route": "/contacto",
@@ -38,7 +45,17 @@
   ],
   "features": {
     "gtm_id": "GTM-ABC123",
+    "ga4_id": "G-XYZ789",
     "has_contact_form": true,
-    "dark_mode": false
+    "contact_channels": {
+      "email": true,
+      "phone": true,
+      "whatsapp": true,
+      "map": true
+    },
+    "dark_mode": false,
+    "i18n": {
+      "enabled": false
+    }
   }
 }

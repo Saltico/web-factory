@@ -5,10 +5,12 @@
   ],
   "default_agent": "00-orchestrator",
   "mcp": {
-    "hostinger": {
-      "type": "remote",
-      "url": "https://mcp.hostinger.com",
-      "enabled": true
+    "servers": {
+      "hostinger": {
+        "type": "remote",
+        "url": "https://mcp.hostinger.com",
+        "enabled": true
+      }
     }
   }
 }

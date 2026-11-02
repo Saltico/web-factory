@@ -34,6 +34,11 @@
           "type": "string",
           "format": "date-time",
           "description": "ISO-8601 timestamp of last modification. Lets the Orchestrator know if the spec changed since last build."
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 timestamp when the user explicitly approved this spec. The Builder verifies this before starting work. Stamped by the Architect after the Orchestrator confirms the approval gate."
         }
       }
     },
@@ -124,11 +129,6 @@
           "type": "string",
           "description": "Production domain (e.g. example.com). Used to build canonical URLs and sitemap entries."
         },
-        "locale": {
-          "type": "string",
-          "default": "es",
-          "description": "BCP-47 locale tag for the site. Controls date/number formatting and default lang attribute."
-        },
         "language": {
           "type": "string",
           "default": "es",
@@ -159,6 +159,31 @@
             "tiktok": { "type": "string", "description": "TikTok profile URL." },
             "whatsapp": { "type": "string", "description": "WhatsApp contact link (e.g. https://wa.me/<number>)." },
             "github": { "type": "string", "description": "GitHub profile/org URL." }
+          }
+        },
+        "contact": {
+          "type": "object",
+          "description": "Actual contact data for the business. These values are stored as environment variables (PUBLIC_CONTACT_EMAIL, PUBLIC_CONTACT_PHONE, PUBLIC_MAPS_EMBED_URL) in the Astro project, never in the harness. The Architect extracts them from the client during intake.",
+          "additionalProperties": false,
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Primary contact email address. Rendered as mailto: link. Stored as PUBLIC_CONTACT_EMAIL env var."
+            },
+            "phone": {
+              "type": "string",
+              "description": "Contact phone number (E.164 format preferred, e.g. +56912345678). Rendered as tel: link. Stored as PUBLIC_CONTACT_PHONE env var."
+            },
+            "address": {
+              "type": "string",
+              "description": "Physical address displayed in the contact section. Not geocoded by the harness; shown as-is."
+            },
+            "mapsEmbedUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "Google Maps embed URL (iframe src) for the business location. Stored as PUBLIC_MAPS_EMBED_URL env var. Obtained from Google Maps > Share > Embed a map."
+            }
           }
         }
       }
@@ -212,7 +237,8 @@
         },
         "ga4_id": {
           "type": "string",
-          "description": "Google Analytics 4 measurement ID. Optional; used if GTM is not configured or for direct GA integration."
+          "pattern": "^G-[A-Z0-9]+$",
+          "description": "Google Analytics 4 measurement ID. When present, injected as PUBLIC_GA4_ID env var. The template handles dual-tracking with GTM without duplicating pageviews."
         },
         "has_contact_form": {
           "type": "boolean",
@@ -220,24 +246,24 @@
         },
         "contact_channels": {
           "type": "object",
-          "description": "Which contact channels to display on the contact section/page. Each boolean toggles a specific channel UI.",
+          "description": "Which contact channels to display on the contact section/page. Each boolean toggles a specific channel UI. The actual values (email, phone, etc.) come from site.contact.",
           "additionalProperties": false,
           "properties": {
             "email": {
               "type": "boolean",
-              "description": "Show email contact link (mailto:)."
+              "description": "Show email contact link (mailto:). Uses site.contact.email."
             },
             "phone": {
               "type": "boolean",
-              "description": "Show phone number link (tel:)."
+              "description": "Show phone number link (tel:). Uses site.contact.phone."
             },
             "whatsapp": {
               "type": "boolean",
-              "description": "Show WhatsApp chat link (wa.me/)."
+              "description": "Show WhatsApp chat link (wa.me/). Uses site.social.whatsapp."
             },
             "map": {
               "type": "boolean",
-              "description": "Show embedded map (e.g. Google Maps iframe) for physical location."
+              "description": "Show embedded map (Google Maps iframe). Uses site.contact.mapsEmbedUrl."
             }
           }
         },
@@ -286,7 +312,7 @@
     },
     "content_collections": {
       "type": "object",
-      "description": "Keystatic CMS content collection definitions for Phase 3. Each key is a collection name; the value defines its schema and fields. Kept open to allow arbitrary collection shapes.",
+      "description": "Keystatic CMS content collection definitions for Fase 2. Each key is a collection name; the value defines its schema and fields. Kept open to allow arbitrary collection shapes.",
       "additionalProperties": {
         "type": "object",
         "description": "A single content collection definition. Name is derived from the object key.",

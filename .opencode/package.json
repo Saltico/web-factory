@@ -1,6 +1,12 @@
 {
+  "name": "web-factory-harness-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tooling dependencies for the Astro Web Factory harness (schema validation, fixture tests).",
+  "scripts": {
+    "test": "node scripts/test-fixtures.mjs"
+  },
   "dependencies": {
-    "@opencode-ai/plugin": "1.18.31",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1"
   }
